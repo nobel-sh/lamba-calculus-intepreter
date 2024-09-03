@@ -1,9 +1,18 @@
 use std::fmt;
 
+/// Enum representing a lambda calculus term, which can be a variable, an
+/// abstraction, or an application.
 #[derive(Clone, PartialEq, Eq)]
 pub enum Term {
+    /// A variable term, represented by its name.
     Variable(String),
+
+    /// An abstraction term, which binds a variable to a body term. This
+    /// basically represents a function with one parameter.
     Abstraction(String, Box<Term>),
+
+    /// An application term, representing the application of one term
+    /// (function) to another term (argument).
     Application(Box<Term>, Box<Term>),
 }
 
