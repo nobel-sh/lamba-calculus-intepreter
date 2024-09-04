@@ -24,7 +24,8 @@ pub fn parse(input: &str) -> InterpreterResult<Term> {
 ///   term      ::= abstraction
 ///              | application
 ///              | variable
-///   abstraction ::= λ identifier . term
+///   abstraction ::= lambda identifier . term
+///   lambda ::= λ | \
 ///   application ::= ( term term )
 ///   variable  ::= identifier
 fn parse_term(tokens: &[TokenKind]) -> Result<(Term, &[TokenKind]), InterpreterError> {
