@@ -85,3 +85,75 @@ fn parse_application(tokens: &[TokenKind]) -> Result<(Term, &[TokenKind]), Inter
         ))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_variable() {
+        assert_eq!(parse("x"), Ok(Term::Variable("x".to_string())));
+    }
+
+    #[test]
+    fn test_parse_abstraction() {
+        assert_eq!(
+            parse("λx.x"),
+            Ok(Term::Abstraction(
+                "x".to_string(),
+                Box::new(Term::Variable("x".to_string()))
+            ))
+        );
+    }
+
+    #[test]
+    fn test_parse_application() {
+        assert_eq!(
+            parse("(f x)"),
+            Ok(Term::Application(
+                Box::new(Term::Variable("f".to_string())),
+                Box::new(Term::Variable("x".to_string()))
+            ))
+        );
+    }
+
+    #[test]
+    fn test_parse_complex_expression() {
+        assert_eq!(
+            parse("(λx.λy.(x y) a)"),
+            Ok(Term::Application(
+                Box::new(Term::Abstraction(
+                    "x".to_string(),
+                    Box::new(Term::Abstraction(
+                        "y".to_string(),
+                        Box::new(Term::Application(
+                            Box::new(Term::Variable("x".to_string())),
+                            Box::new(Term::Variable("y".to_string()))
+                        ))
+                    ))
+                )),
+                Box::new(Term::Variable("a".to_string()))
+            ))
+        );
+    }
+
+    #[test]
+    fn test_parse_error_missing_dot() {
+        assert!(parse("λx x").is_err());
+    }
+
+    #[test]
+    fn test_parse_error_unexpected_end() {
+        assert!(parse("λx").is_err());
+    }
+
+    #[test]
+    fn test_parse_error_unexpected_parenthesis() {
+        assert!(parse("(x").is_err());
+    }
+
+    #[test]
+    fn test_parse_error_unexpected_token() {
+        assert!(parse("λx.x)").is_err());
+    }
+}
