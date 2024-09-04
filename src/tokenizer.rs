@@ -50,7 +50,7 @@ pub fn tokenize(input: &str) -> InterpreterResult<Vec<TokenKind>> {
                     tokens.push(TokenKind::Identifier(identifier));
                 } else {
                     return Err(InterpreterError::TokenizerError(format!(
-                        "Unexpected character: {}",
+                        "Unexpected character '{}'",
                         c
                     )));
                 }
@@ -142,7 +142,7 @@ mod tests {
         assert_eq!(
             tokenize("λx@x"),
             Err(InterpreterError::TokenizerError(
-                "Unexpected character: @".to_string()
+                "Unexpected character '@'".to_string()
             ))
         );
     }

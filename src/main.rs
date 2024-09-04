@@ -1,4 +1,5 @@
 mod error;
+mod parser;
 mod term;
 mod tokenizer;
 
