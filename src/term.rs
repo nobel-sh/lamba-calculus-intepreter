@@ -2,7 +2,7 @@ use std::fmt;
 
 /// Enum representing a lambda calculus term, which can be a variable, an
 /// abstraction, or an application.
-#[derive(Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Term {
     /// A variable term, represented by its name.
     Variable(String),

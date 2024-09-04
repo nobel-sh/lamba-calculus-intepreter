@@ -1,7 +1,7 @@
 use thiserror::Error;
 
 /// Enum representing errors that can occur in the lambda calculus interpreter.
-#[derive(Error, Debug)]
+#[derive(Error, Debug, PartialEq)]
 pub enum InterpreterError {
     /// Error for an unbound variable. This occurs when a variable is used but
     /// not defined in the current scope.
@@ -17,6 +17,11 @@ pub enum InterpreterError {
     /// into a valid lambda expression.
     #[error("Parse error: {0}")]
     ParseError(String),
+
+    /// Error during tokenizing. This error is returned when the tokenizer
+    /// encounters an unexpected or invalid character
+    #[error("Tokenizer error: {0}")]
+    TokenizerError(String),
 }
 
 /// Type alias for results returned by the interpreter.
