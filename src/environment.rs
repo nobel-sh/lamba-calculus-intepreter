@@ -23,12 +23,12 @@ impl Environment {
         }
     }
 
-    pub fn get(&self, name: &str) -> InterpreterResult<Term> {
+    pub fn get(&self, name: &str) -> Option<Term> {
         match self.bindings.get(name) {
-            Some(term) => Ok(term.clone()),
+            Some(term) => Some(term.clone()),
             None => match &self.parent {
                 Some(parent) => parent.get(name),
-                None => Err(InterpreterError::UnboundVariable(name.to_string())),
+                None => None,
             },
         }
     }
@@ -45,7 +45,7 @@ mod tests {
     #[test]
     fn test_environment_new() {
         let env = Environment::new();
-        assert!(env.get("x").is_err());
+        assert!(env.get("x").is_none());
     }
 
     #[test]
@@ -53,30 +53,26 @@ mod tests {
         let mut env = Environment::new();
         let term = Term::Variable("y".to_string());
         env.set("x".to_string(), term.clone());
-        assert_eq!(env.get("x"), Ok(term));
+        assert_eq!(env.get("x"), Some(term));
     }
 
     #[test]
     fn test_environment_extend() {
         let mut parent = Environment::new();
         parent.set("x".to_string(), Term::Variable("parent_x".to_string()));
-
         let mut child = parent.extend();
         child.set("y".to_string(), Term::Variable("child_y".to_string()));
-
-        assert_eq!(child.get("x"), Ok(Term::Variable("parent_x".to_string())));
-        assert_eq!(child.get("y"), Ok(Term::Variable("child_y".to_string())));
-        assert!(child.get("z").is_err());
+        assert_eq!(child.get("x"), Some(Term::Variable("parent_x".to_string())));
+        assert_eq!(child.get("y"), Some(Term::Variable("child_y".to_string())));
+        assert!(child.get("z").is_none());
     }
 
     #[test]
     fn test_environment_shadowing() {
         let mut parent = Environment::new();
         parent.set("x".to_string(), Term::Variable("parent_x".to_string()));
-
         let mut child = parent.extend();
         child.set("x".to_string(), Term::Variable("child_x".to_string()));
-
-        assert_eq!(child.get("x"), Ok(Term::Variable("child_x".to_string())));
+        assert_eq!(child.get("x"), Some(Term::Variable("child_x".to_string())));
     }
 }
